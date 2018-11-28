@@ -7,6 +7,7 @@ const keys = require("./keys.js");
 const spotify = new Spotify(keys.spotify);
 const liriCommand = process.argv[2];
 
+//switch statement - takes in command and initiates one of the first 3 functions
 switch (liriCommand) {
     case "spotify-this-song":
         spotifyCase();
@@ -21,12 +22,11 @@ switch (liriCommand) {
         console.log("This does not work!")
 }
 
-//helper functions
 //function1 - ajax call function that searches spotify api by artist name
 function spotifyCase() {
-    var songName = process.argv[3];
+    var songName = process.argv[3]
     for (let i = 4; i < process.argv.length; i++) {
-        songName += '+' + process.argv[i]
+        songName += '+' + process.argv[i];
     }
     spotify
         .search({
@@ -37,21 +37,10 @@ function spotifyCase() {
             console.log(response.tracks);
         })
         .catch(function (err) {
-            console.log(err);
+            console.log(err)
         });
     console.log(songName)
-    //Then run a request to the OMDB API with the movie specified
-    //var queryUrl = "http://www.omdbapi.com/?t=" + songName + "&y=&plot=short&apikey=trilogy";
-    //This line is just to help us debug against the actual URL.
-    //console.log(queryUrl);
-    //Then create a request to the queryUrl
-    // axios.get(queryUrl).then(
-    //     function (response) {
-    //         console.log(response)
-    //     }
-    // );
 };
-
 
 //function2 - ajax call function that searches omdb api movie name
 function omdbCase() {
@@ -79,7 +68,6 @@ function omdbCase() {
     );
 };
 
-
 //function3 - ajax call function that searches bands in town api by artists and returns venue, location, date of event
 function bandCase() {
     let bandName = process.argv[3];
@@ -102,16 +90,13 @@ function bandCase() {
     function bandResponse(bandData) {
         // console.log(bandData)
         if (bandData.length === 0) {
-            console.log("no upcoming shows for" + bandName)
+            console.log("Sorry there are no upcoming events for " + bandName + " .");
         } else {
             for (let i = 0; i < 6 && i < bandData.length; i++) {
-                console.log("Venue name: " + (bandData[i]).venue.name)
-                console.log("Venue city: " + (bandData[i]).venue.city)
-                console.log("Date & Time: " + (bandData[i]).datetime)
+                console.log("Venue name: " + (bandData[i]).venue.name);
+                console.log("Venue city: " + (bandData[i]).venue.city);
+                console.log("Date & Time: " + (bandData[i]).datetime);
             }
         }
     };
 };
-
-// function4 - takes in command and initiates one of the first 3 functions, use switch or case statement to decide which function to use
-// get command from the command line assign to variable and use that variable to trigger switch statement
