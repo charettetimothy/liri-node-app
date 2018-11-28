@@ -18,11 +18,15 @@ switch (liriCommand) {
     case "concert-this":
         bandCase();
         break;
+    case "do-what-it-says":
+        fsCase();
+        break;
     default:
         console.log("This does not work!")
 }
 
 //function1 - ajax call function that searches spotify api by artist name
+//and returns song name, preview link of the song from spotify and album the song is from.
 function spotifyCase() {
     var songName = process.argv[3]
     for (let i = 4; i < process.argv.length; i++) {
@@ -42,20 +46,20 @@ function spotifyCase() {
     console.log(songName)
 };
 
-//function2 - ajax call function that searches omdb api movie name
+//function2 - ajax call function that searches omdb api for a movie and displays title, year,
+//IMDB rating, country, language, plot and actors.
 function omdbCase() {
     var movieName = process.argv[3];
     for (let i = 4; i < process.argv.length; i++) {
         movieName += '+' + process.argv[i]
     }
-    console.log(movieName)
     //Then run a request to the OMDB API with the movie specified
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-    //This line is just to help us debug against the actual URL.
-    console.log(queryUrl);
+    const mrNobody = "http://www.omdbapi.com/?t=mr+nobody&y=&plot=short&apikey=trilogy";
     //Then create a request to the queryUrl
     axios.get(queryUrl).then(
         function (response) {
+            console.log("----------------------------Here is your movie data------------------------------")
             console.log('Title: ' + response.data.Title);
             console.log('Year: ' + response.data.Year);
             console.log('IMDB Rating: ' + response.data.imdbRating);
@@ -64,6 +68,23 @@ function omdbCase() {
             console.log('Language: ' + response.data.Language);
             console.log('Plot: ' + response.data.Plot);
             console.log('Actors: ' + response.data.Actors);
+            console.log("---------------------------------------------------------------------------------")
+            if (movieName === undefined) {
+                axios.get(mrNobody).then(
+                    function (response) {
+                        console.log("--------------------------I will pick a movie for you!---------------------------")
+                        console.log('Title: ' + response.data.Title);
+                        console.log('Year: ' + response.data.Year);
+                        console.log('IMDB Rating: ' + response.data.imdbRating);
+                        console.log('Rotten Tomatos Rating: ' + response.data.Year);
+                        console.log('Country: ' + response.data.Country);
+                        console.log('Language: ' + response.data.Language);
+                        console.log('Plot: ' + response.data.Plot);
+                        console.log('Actors: ' + response.data.Actors);
+                        console.log("---------------------------------------------------------------------------------")
+                    }
+                )
+            }
         }
     );
 };
@@ -74,29 +95,39 @@ function bandCase() {
     for (let i = 4; i < process.argv.length; i++) {
         bandName += '+' + process.argv[i]
     }
-    console.log(bandName)
     //Then run a request to the Bands In Town API with the band specified
-    let queryUrl = "https://rest.bandsintown.com/artists/" + bandName + "/events?app_id=ab7314c522a41c69f17770efb133611c&date=all";
-    console.log(queryUrl);
+    const queryUrl = "https://rest.bandsintown.com/artists/" + bandName + "/events?app_id=ab7314c522a41c69f17770efb133611c&date=upcoming";
     //Then create a request to the queryUrl
     axios.get(queryUrl).then(
         function (response) {
-            // console.log(response.data);
             bandResponse(response.data);
         }
     );
     //this is how i pass response into bandData 
     //2 parts - define the function set up any (placeholder)parameters, call the function(invoking)
     function bandResponse(bandData) {
-        // console.log(bandData)
         if (bandData.length === 0) {
-            console.log("Sorry there are no upcoming events for " + bandName + " .");
+            console.log("Sorry there are no upcoming events for " + bandName + ".");
         } else {
+            console.log("-------------------Here are the top 5 upcoming concerts:-------------------------")
             for (let i = 0; i < 6 && i < bandData.length; i++) {
+                var newDate = (bandData[i]).datetime;
+                var convertedDate = moment(newDate).format('MM/DD/YYYY');
+                console.log("---------------------------------------------------------------------------------")
                 console.log("Venue name: " + (bandData[i]).venue.name);
                 console.log("Venue city: " + (bandData[i]).venue.city);
-                console.log("Date & Time: " + (bandData[i]).datetime);
+                console.log("Date & Time: " + (convertedDate));
+                console.log("---------------------------------------------------------------------------------")
             }
         }
     };
 };
+
+function fsCase() {
+    fs.readFile("random.txt", "utf-8", function (error, data) {
+        if (error) {
+            return console.log(error);
+        }
+        console.log(data);
+    });
+}
