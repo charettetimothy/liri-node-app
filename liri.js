@@ -7,7 +7,7 @@ const keys = require("./keys.js");
 const spotify = new Spotify(keys.spotify);
 const liriCommand = process.argv[2];
 
-//switch statement - takes in command and initiates one of the first 3 functions
+//switch statement - takes in command and initiates one of the first 4 functions
 switch (liriCommand) {
     case "spotify-this-song":
         spotifyCase();
@@ -38,7 +38,7 @@ function spotifyCase() {
             query: songName
         })
         .then(function (response) {
-            console.log(response.tracks);
+            console.log(response);
         })
         .catch(function (err) {
             console.log(err)
@@ -59,7 +59,7 @@ function omdbCase() {
     //Then create a request to the queryUrl
     axios.get(queryUrl).then(
         function (response) {
-            console.log("----------------------------Here is your movie data------------------------------")
+            console.log("-----Here is your movie data-----")
             console.log('Title: ' + response.data.Title);
             console.log('Year: ' + response.data.Year);
             console.log('IMDB Rating: ' + response.data.imdbRating);
@@ -68,11 +68,11 @@ function omdbCase() {
             console.log('Language: ' + response.data.Language);
             console.log('Plot: ' + response.data.Plot);
             console.log('Actors: ' + response.data.Actors);
-            console.log("---------------------------------------------------------------------------------")
+            console.log("---------------------------------")
             if (movieName === undefined) {
                 axios.get(mrNobody).then(
                     function (response) {
-                        console.log("--------------------------I will pick a movie for you!---------------------------")
+                        console.log("-----I will pick a movie for you!-----")
                         console.log('Title: ' + response.data.Title);
                         console.log('Year: ' + response.data.Year);
                         console.log('IMDB Rating: ' + response.data.imdbRating);
@@ -81,7 +81,7 @@ function omdbCase() {
                         console.log('Language: ' + response.data.Language);
                         console.log('Plot: ' + response.data.Plot);
                         console.log('Actors: ' + response.data.Actors);
-                        console.log("---------------------------------------------------------------------------------")
+                        console.log("--------------------------------------")
                     }
                 )
             }
@@ -109,15 +109,15 @@ function bandCase() {
         if (bandData.length === 0) {
             console.log("Sorry there are no upcoming events for " + bandName + ".");
         } else {
-            console.log("-------------------Here are the top 5 upcoming concerts:-------------------------")
+            console.log("-----Here are the top 5 upcoming concerts:-----")
             for (let i = 0; i < 6 && i < bandData.length; i++) {
                 var newDate = (bandData[i]).datetime;
                 var convertedDate = moment(newDate).format('MM/DD/YYYY');
-                console.log("---------------------------------------------------------------------------------")
+                console.log("-----------------------------------------------")
                 console.log("Venue name: " + (bandData[i]).venue.name);
                 console.log("Venue city: " + (bandData[i]).venue.city);
                 console.log("Date & Time: " + (convertedDate));
-                console.log("---------------------------------------------------------------------------------")
+                console.log("-----------------------------------------------")
             }
         }
     };
