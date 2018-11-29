@@ -38,7 +38,10 @@ function spotifyCase() {
             query: songName
         })
         .then(function (response) {
-            console.log(response);
+            // console.log(response.tracks.items[0].album.artists[0].external_urls.spotify);
+            // console.log(response.tracks.items[0].album.artists[0].external_urls.spotify);
+            // console.log(response.tracks.items[0].album.artists[0].name);
+            console.log(response.tracks.items[0].name);
         })
         .catch(function (err) {
             console.log(err)
@@ -53,10 +56,15 @@ function omdbCase() {
     for (let i = 4; i < process.argv.length; i++) {
         movieName += '+' + process.argv[i]
     }
+
+    if (!movieName) {
+        movieName = "mr+nobody"
+    }
     //Then run a request to the OMDB API with the movie specified
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-    const mrNobody = "http://www.omdbapi.com/?t=mr+nobody&y=&plot=short&apikey=trilogy";
+    // const mrNobody = "http://www.omdbapi.com/?t=mr+nobody&y=&plot=short&apikey=trilogy";
     //Then create a request to the queryUrl
+
     axios.get(queryUrl).then(
         function (response) {
             console.log("---Here is your requested movie information---")
@@ -68,21 +76,21 @@ function omdbCase() {
             console.log('Plot: ' + response.data.Plot);
             console.log('Actors: ' + response.data.Actors);
             console.log("---------------------------------")
-            if (movieName === undefined) {
-                axios.get(mrNobody).then(
-                    function (response) {
-                        console.log("-----Fine! I will pick a movie for you!-----")
-                        console.log('Title: ' + response.data.Title);
-                        console.log('Year: ' + response.data.Year);
-                        console.log('IMDB Rating: ' + response.data.imdbRating);
-                        console.log('Country: ' + response.data.Country);
-                        console.log('Language: ' + response.data.Language);
-                        console.log('Plot: ' + response.data.Plot);
-                        console.log('Actors: ' + response.data.Actors);
-                        console.log("----------You are welcome!-------------")
-                    }
-                )
-            }
+            // if (movieName === undefined) {
+            //     axios.get(mrNobody).then(
+            //         function (response) {
+            //             console.log("-----Fine! I will pick a movie for you!-----")
+            //             console.log('Title: ' + response.data.Title);
+            //             console.log('Year: ' + response.data.Year);
+            //             console.log('IMDB Rating: ' + response.data.imdbRating);
+            //             console.log('Country: ' + response.data.Country);
+            //             console.log('Language: ' + response.data.Language);
+            //             console.log('Plot: ' + response.data.Plot);
+            //             console.log('Actors: ' + response.data.Actors);
+            //             console.log("----------You are welcome!-------------")
+            //         }
+            //     )
+            // }
         }
     );
 };
@@ -112,8 +120,7 @@ function bandCase() {
                 console.log("-----------------------------------------------")
                 console.log("Venue name: " + bandData[i].venue.name);
                 console.log("Venue city: " + bandData[i].venue.city);
-                var newDate = bandData[i].datetime;
-                var convertedDate = moment(newDate).format('MM/DD/YYYY');
+                var convertedDate = moment(bandData[i].datetime).format('MM/DD/YYYY');
                 console.log("Date: " + (convertedDate));
                 console.log("-----------------------------------------------")
             }
