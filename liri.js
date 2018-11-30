@@ -8,7 +8,7 @@ const spotify = new Spotify(keys.spotify);
 const liriCommand = process.argv[2];
 const searchName = process.argv[3];
 
-//switch statement - takes in command and initiates one of the first 4 functions
+//Switch statement - Takes in command and initiates one of the first 4 functions.
 var run = function (command, search) {
     switch (command) {
         case "spotify-this-song":
@@ -28,8 +28,7 @@ var run = function (command, search) {
     }
 }
 
-//function1 - ajax call function that searches spotify api by artist name
-//and returns song name, preview link of the song from spotify and album the song is from.
+//Function 1 - Ajax call function that searches spotify api by song name and returns song name, preview link and album.
 function spotifyCase(search) {
     var songName = search
     for (let i = 4; i < process.argv.length; i++) {
@@ -48,24 +47,20 @@ function spotifyCase(search) {
         .catch(function (err) {
             console.log(err)
         });
-    console.log(songName)
 };
 
-//function2 - ajax call function that searches omdb api for a movie and displays title, year,
-//IMDB rating, country, language, plot and actors.
+//Function 2 - Ajax call function that searches omdb api for a movie and displays info.
 function omdbCase(search) {
     var movieName = search;
     for (let i = 4; i < process.argv.length; i++) {
         movieName += '+' + process.argv[i]
     }
-
     if (!movieName) {
         movieName = "mr+nobody"
     }
     //Then run a request to the OMDB API with the movie specified
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
     //Then create a request to the queryUrl
-
     axios.get(queryUrl).then(
         function (response) {
             console.log("---Here is your requested movie information---")
@@ -81,7 +76,7 @@ function omdbCase(search) {
     );
 };
 
-//function3 - ajax call function that searches bands in town api by artists and returns venue, location, date of event
+//Function 3 - Ajax call function that searches bands in town api by artists and returns venue, location, date of event.
 function bandCase(search) {
     let bandName = search;
     for (let i = 4; i < process.argv.length; i++) {
@@ -95,8 +90,7 @@ function bandCase(search) {
             bandResponse(response.data);
         }
     );
-    //this is how i pass response into bandData 
-    //2 parts - define the function set up any (placeholder)parameters, call the function(invoking)
+    //passing bandResponse into bandData - 1. Define the function, set up any parameters. 2. Call the function(invoking)
     function bandResponse(bandData) {
         if (bandData.length === 0) {
             console.log("Sorry there are no upcoming events for " + bandName + ".");
@@ -114,17 +108,15 @@ function bandCase(search) {
     };
 };
 
+//Function 4 - LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
 function fsCase() {
     fs.readFile("random.txt", "utf-8", function (error, data) {
         if (error) {
             return console.log(error);
         }
         dataSplit = data.split(",");
-        console.log(data);
         var dataUno = dataSplit[0];
-        console.log(dataUno)
         var dataDos = dataSplit[1];
-        console.log(dataDos)
         run(dataUno, dataDos);
     });
 }
