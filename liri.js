@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 const Spotify = require("node-spotify-api");
 const moment = require("moment");
@@ -7,6 +8,7 @@ const keys = require("./keys.js");
 const spotify = new Spotify(keys.spotify);
 const liriCommand = process.argv[2];
 const searchName = process.argv[3];
+const inquirer = require("inquirer");
 
 //Switch statement - Takes in command and initiates one of the first 4 functions.
 var run = function (command, search) {
@@ -40,16 +42,20 @@ function spotifyCase(search) {
             query: songName
         })
         .then(function (response) {
-            console.log(response.tracks.items[0].album.artists[0].external_urls.spotify);
-            console.log(response.tracks.items[0].album.artists[0].name);
-            console.log(response.tracks.items[0].name);
+            for (let i = 0; i < 6 && i < songName.length; i++) {
+                console.log("---------Here are the top 5 results!----------")
+                console.log(response.tracks.items[0].album.artists[0].external_urls.spotify);
+                console.log(response.tracks.items[0].album.artists[0].name);
+                console.log(response.tracks.items[0].name);
+                console.log("----------------------------------------------")
+            }
         })
         .catch(function (err) {
             console.log(err)
         });
 };
 
-//Function 2 - Ajax call function that searches omdb api for a movie and displays info.
+//Function 2 - Ajax call function that searches OMDb api for a movie and displays info.
 function omdbCase(search) {
     var movieName = search;
     for (let i = 4; i < process.argv.length; i++) {
