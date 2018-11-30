@@ -59,7 +59,7 @@ function omdbCase(search) {
         movieName = "mr+nobody"
     }
     //Then run a request to the OMDB API with the movie specified
-    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    const queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
     //Then create a request to the queryUrl
     axios.get(queryUrl).then(
         function (response) {
