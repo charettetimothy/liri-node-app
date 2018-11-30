@@ -6,29 +6,32 @@ const fs = require("fs");
 const keys = require("./keys.js");
 const spotify = new Spotify(keys.spotify);
 const liriCommand = process.argv[2];
+const searchName = process.argv[3];
 
 //switch statement - takes in command and initiates one of the first 4 functions
-switch (liriCommand) {
-    case "spotify-this-song":
-        spotifyCase();
-        break;
-    case "movie-this":
-        omdbCase();
-        break;
-    case "concert-this":
-        bandCase();
-        break;
-    case "do-what-it-says":
-        fsCase();
-        break;
-    default:
-        console.log("This does not work!")
+var run = function (command, search) {
+    switch (command) {
+        case "spotify-this-song":
+            spotifyCase(search);
+            break;
+        case "movie-this":
+            omdbCase(search);
+            break;
+        case "concert-this":
+            bandCase(search);
+            break;
+        case "do-what-it-says":
+            fsCase();
+            break;
+        default:
+            console.log("This does not work!")
+    }
 }
 
 //function1 - ajax call function that searches spotify api by artist name
 //and returns song name, preview link of the song from spotify and album the song is from.
-function spotifyCase() {
-    var songName = process.argv[3]
+function spotifyCase(search) {
+    var songName = search
     for (let i = 4; i < process.argv.length; i++) {
         songName += '+' + process.argv[i];
     }
@@ -38,9 +41,8 @@ function spotifyCase() {
             query: songName
         })
         .then(function (response) {
-            // console.log(response.tracks.items[0].album.artists[0].external_urls.spotify);
-            // console.log(response.tracks.items[0].album.artists[0].external_urls.spotify);
-            // console.log(response.tracks.items[0].album.artists[0].name);
+            console.log(response.tracks.items[0].album.artists[0].external_urls.spotify);
+            console.log(response.tracks.items[0].album.artists[0].name);
             console.log(response.tracks.items[0].name);
         })
         .catch(function (err) {
@@ -51,8 +53,8 @@ function spotifyCase() {
 
 //function2 - ajax call function that searches omdb api for a movie and displays title, year,
 //IMDB rating, country, language, plot and actors.
-function omdbCase() {
-    var movieName = process.argv[3];
+function omdbCase(search) {
+    var movieName = search;
     for (let i = 4; i < process.argv.length; i++) {
         movieName += '+' + process.argv[i]
     }
@@ -62,7 +64,6 @@ function omdbCase() {
     }
     //Then run a request to the OMDB API with the movie specified
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-    // const mrNobody = "http://www.omdbapi.com/?t=mr+nobody&y=&plot=short&apikey=trilogy";
     //Then create a request to the queryUrl
 
     axios.get(queryUrl).then(
@@ -76,28 +77,13 @@ function omdbCase() {
             console.log('Plot: ' + response.data.Plot);
             console.log('Actors: ' + response.data.Actors);
             console.log("---------------------------------")
-            // if (movieName === undefined) {
-            //     axios.get(mrNobody).then(
-            //         function (response) {
-            //             console.log("-----Fine! I will pick a movie for you!-----")
-            //             console.log('Title: ' + response.data.Title);
-            //             console.log('Year: ' + response.data.Year);
-            //             console.log('IMDB Rating: ' + response.data.imdbRating);
-            //             console.log('Country: ' + response.data.Country);
-            //             console.log('Language: ' + response.data.Language);
-            //             console.log('Plot: ' + response.data.Plot);
-            //             console.log('Actors: ' + response.data.Actors);
-            //             console.log("----------You are welcome!-------------")
-            //         }
-            //     )
-            // }
         }
     );
 };
 
 //function3 - ajax call function that searches bands in town api by artists and returns venue, location, date of event
-function bandCase() {
-    let bandName = process.argv[3];
+function bandCase(search) {
+    let bandName = search;
     for (let i = 4; i < process.argv.length; i++) {
         bandName += '+' + process.argv[i]
     }
@@ -133,6 +119,14 @@ function fsCase() {
         if (error) {
             return console.log(error);
         }
+        dataSplit = data.split(",");
         console.log(data);
+        var dataUno = dataSplit[0];
+        console.log(dataUno)
+        var dataDos = dataSplit[1];
+        console.log(dataDos)
+        run(dataUno, dataDos);
     });
 }
+
+run(liriCommand, searchName);
