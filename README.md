@@ -12,4 +12,4 @@ This bot takes in commands from the terminal and displays the information inside
 - Spotify
 - Bands In Town
 
-![liri-bot-demo](./assets/images/liri-bot-demo)
+![liri-bot-demo](./assets/imgs/liri-bot-demo.gif)
