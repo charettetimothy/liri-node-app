@@ -9,34 +9,6 @@ const liriCommand = process.argv[2];
 const searchName = process.argv[3];
 const inquirer = require("inquirer");
 
-// // Create a "Prompt" with a series of questions.
-// inquirer
-//   .prompt([
-//     // Here we create a basic text prompt.
-//     {
-//         type: "list",
-//         message: "Would you like to search for a movie, song, or concert?",
-//         choices: ["Movie", "Song", "Concert"],
-//         name: "userInput"
-//       },
-//     {
-//       type: "confirm",
-//       message: "Are you sure:",
-//       name: "confirm",
-//       default: true
-//     }
-//   ])
-//   .then(function(inquirerResponse) {
-//     // If the inquirerResponse confirms, we displays the inquirerResponse's username and pokemon from the answers.
-//     if (inquirerResponse.confirm) {
-//       console.log("\nWelcome " + inquirerResponse.username);
-//       console.log("Your " + inquirerResponse.pokemon + " is ready for battle!\n");
-//     }
-//     else {
-//       console.log("\nThat's okay " + inquirerResponse.username + ", come again when you are more sure.\n");
-//     }
-//   });
-
 //Switch statement - Takes in command and initiates one of the first 4 functions.
 var run = function (command, search) {
     switch (command) {
@@ -50,7 +22,7 @@ var run = function (command, search) {
             bandCase(search);
             break;
         case "do-what-it-says":
-            fsCase();
+            fsCase(search);
             break;
         default:
             console.log("This does not work!")
@@ -59,6 +31,7 @@ var run = function (command, search) {
 
 //Function 1 - Ajax call function that searches spotify api by song name and returns song name, preview link and album.
 const spotifyCase = (search) => {
+    // search = process.argv.slice(3).join(' ');
     var songName = search
     for (let i = 4; i < process.argv.length; i++) {
         songName += '+' + process.argv[i];
@@ -84,15 +57,16 @@ const spotifyCase = (search) => {
 
 //Function 2 - Ajax call function that searches OMDb api for a movie and displays info.
 const omdbCase = (search) => {
-    var movieName = search;
-    for (let i = 4; i < process.argv.length; i++) {
-        movieName += '+' + process.argv[i]
-    }
-    if (!movieName) {
-        movieName = "mr+nobody"
+    search = process.argv.slice(3).join(' ');
+    // console.log(search)
+    // for (let i = 4; i < process.argv.length; i++) {
+    //     movieName += '+' + process.argv[i]
+    // }
+    if (!search) {
+        search = "mr+nobody"
     }
     //Then run a request to the OMDB API with the movie specified
-    const queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    const queryUrl = "http://www.omdbapi.com/?t=" + search + "&y=&plot=short&apikey=trilogy";
     //Then create a request to the queryUrl
     axios.get(queryUrl).then(
         function (response) {
@@ -111,12 +85,13 @@ const omdbCase = (search) => {
 
 //Function 3 - Ajax call function that searches bands in town api by artists and returns venue, location, date of event.
 const bandCase = (search) => {
-    let bandName = search;
-    for (let i = 4; i < process.argv.length; i++) {
-        bandName += '+' + process.argv[i]
-    }
+    search = process.argv.slice(3).join(' ');
+    // let bandName = search;
+    // for (let i = 4; i < process.argv.length; i++) {
+    //     bandName += '+' + process.argv[i]
+    // }
     //Then run a request to the Bands In Town API with the band specified
-    const queryUrl = "https://rest.bandsintown.com/artists/" + bandName + "/events?app_id=ab7314c522a41c69f17770efb133611c&date=upcoming";
+    const queryUrl = "https://rest.bandsintown.com/artists/" + search + "/events?app_id=ab7314c522a41c69f17770efb133611c&date=upcoming";
     //Then create a request to the queryUrl
     axios.get(queryUrl).then(
         function (response) {
