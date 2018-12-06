@@ -6,11 +6,13 @@ const fs = require("fs");
 const keys = require("./keys.js");
 const spotify = new Spotify(keys.spotify);
 const liriCommand = process.argv[2];
-const searchName = process.argv[3];
-const inquirer = require("inquirer");
+const searchName = process.argv.slice(3).join(' ');
+// const inquirer = require("inquirer");
 
 //Switch statement - Takes in command and initiates one of the first 4 functions.
 var run = function (command, search) {
+    console.log(command)
+    console.log(search)
     switch (command) {
         case "spotify-this-song":
             spotifyCase(search);
@@ -31,20 +33,34 @@ var run = function (command, search) {
 
 //Function 1 - Ajax call function that searches spotify api by song name and returns song name, preview link and album.
 const spotifyCase = (search) => {
+    console.log(search)
     // search = process.argv.slice(3).join(' ');
-    var songName = search
-    for (let i = 4; i < process.argv.length; i++) {
-        songName += '+' + process.argv[i];
-    }
+    // var songName = search
+    // for (let i = 4; i < process.argv.length; i++) {
+    //     songName += '+' + process.argv[i];
+    // }
     spotify
         .search({
             type: 'track',
-            query: songName
+            query: search
         })
         .then(function (response) {
-            for (let i = 0; i < 6 && i < songName.length; i++) {
-                console.log("---------Here are the top 5 results!----------")
-                console.log(response.tracks.items[i].preview_url);
+            console.log(response.tracks.items.length)
+            
+           var numberOfItems;
+           if (response.tracks.items.length < 5) { 
+               numberOfItems = response.tracks.items.length
+           } else {
+               numberOfItems = 5;
+           }
+           console.log("---------Here are the top " + numberOfItems + " results!----------")
+           for (let i = 0; i < 5 && i < response.tracks.items.length; i++) {
+                
+                if (response.tracks.items[i].preview_url) {
+                    console.log(response.tracks.items[i].preview_url);
+                }else {
+                    console.log("no preview available")
+                }              
                 console.log(response.tracks.items[i].album.artists[0].name);
                 console.log(response.tracks.items[i].name);
                 console.log("----------------------------------------------")
